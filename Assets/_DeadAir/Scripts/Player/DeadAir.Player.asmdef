@@ -1,0 +1,17 @@
+{
+    "name": "DeadAir.Player",
+    "rootNamespace": "DeadAir.Player",
+    "references": [
+        "DeadAir.Core",
+        "DeadAir.Controls"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
