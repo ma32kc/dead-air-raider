@@ -9,6 +9,7 @@ namespace DeadAir.Player
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(PlayerInputHandler))]
     [RequireComponent(typeof(Health))]
+    [RequireComponent(typeof(AudioSource))]
     public class PlayerMotor : MonoBehaviour
     {
         [SerializeField] private PlanetGravity planetGravity = PlanetGravity.Base;
@@ -21,7 +22,9 @@ namespace DeadAir.Player
 
         [Header("Шаги")]
         [SerializeField] private AudioClip footstepSound;
+        [SerializeField] private AudioSource footstepSource;
         [SerializeField] private float stepInterval = 0.48f;
+        [SerializeField, Range(0f, 1f)] private float footstepVolume = 0.25f;
 
         private CharacterController controller;
         private PlayerInputHandler input;
@@ -43,6 +46,13 @@ namespace DeadAir.Player
             controller = GetComponent<CharacterController>();
             input = GetComponent<PlayerInputHandler>();
             health = GetComponent<Health>();
+            if (footstepSource == null)
+                footstepSource = GetComponent<AudioSource>();
+
+            // Игрок всегда рядом с камерой - 2D, без Create/Destroy на каждый шаг
+            footstepSource.playOnAwake = false;
+            footstepSource.loop = false;
+            footstepSource.spatialBlend = 0f;
             ApplyGravity();
         }
 
@@ -159,9 +169,18 @@ namespace DeadAir.Player
             stepTimer -= Time.deltaTime;
             if (stepTimer <= 0f)
             {
-                SoundPlayer.PlayAt(footstepSound, transform.position, 0.25f, 1f);
+                PlayFootstep();
                 stepTimer = running ? stepInterval * 0.7f : stepInterval;
             }
+        }
+
+        private void PlayFootstep()
+        {
+            if (footstepSound == null)
+                return;
+
+            footstepSource.pitch = Random.Range(0.95f, 1.05f);
+            footstepSource.PlayOneShot(footstepSound, footstepVolume);
         }
     }
 }
